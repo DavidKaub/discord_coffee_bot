@@ -1,12 +1,13 @@
 import asyncio
 import logging
+import pytz
 from datetime import datetime
 from typing import List, Any
 
 import discord
 from discord import Intents
 
-from discord_coffee_reminder.config import MySettings
+from .config import MySettings
 
 app_settings = MySettings()
 
@@ -29,12 +30,15 @@ class MyClient(discord.Client):
 
     async def run_reminder(self) -> None:
         logger.info("Starting reminder thread...")
-        last_day = datetime.today()
+        tz = pytz.timezone(app_settings.TIME_ZONE)
+        last_day = datetime.now(tz)
         last_day_weekday = last_day.weekday()
         announce = True
         while self.running:
-            await asyncio.sleep(5)
-            current_day = datetime.today()
+            await asyncio.sleep(1)
+            # apply correct time zone (for docker)
+            current_day = datetime.now(tz)
+            logger.info(current_day)
             current_weekday = current_day.weekday()
 
             if current_weekday != last_day_weekday:
