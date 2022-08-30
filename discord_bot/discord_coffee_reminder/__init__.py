@@ -8,6 +8,7 @@ import discord
 from discord import Intents
 
 from .config import MySettings
+from .util import get_random_tenor_gif
 
 app_settings = MySettings()
 
@@ -32,18 +33,19 @@ class MyClient(discord.Client):
         logger.info("Starting reminder thread...")
         tz = pytz.timezone(app_settings.TIME_ZONE)
         last_day = datetime.now(tz)
+        logger.info(last_day)
         last_day_weekday = last_day.weekday()
         announce = True
         while self.running:
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
             # apply correct time zone (for docker)
             current_day = datetime.now(tz)
-            logger.info(current_day)
             current_weekday = current_day.weekday()
 
             if current_weekday != last_day_weekday:
                 # if a new day has begun a new announcement is due
                 logger.info("A new day has begun...")
+                logger.info(current_day)
                 announce = True
 
             if not self.weekday_only or current_weekday < 5:
@@ -88,7 +90,11 @@ class MyClient(discord.Client):
 
     async def call_for_coffee_break(self):
         logger.info("Call for Coffee Time!")
+        current_date = datetime.now()
+        day_as_string = current_date.strftime("%Y-%m.%d")
+        time_as_string = current_date.strftime("%H:%M")
         for guild in self.guilds:
             for channel_category in guild.channels:
                 if channel_category.name in self.reminder_channels:
-                    await channel_category.send(f"It's {datetime.now()} - it's coffee time :)")
+                    await channel_category.send(f"It's {time_as_string} on {day_as_string} - it's coffee time :)")
+                    await channel_category.send(get_random_tenor_gif(app_settings.TENOR_SEARCH_TOPIC))
