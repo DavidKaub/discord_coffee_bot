@@ -61,11 +61,12 @@ class MyClient(discord.Client):
             logger.info(f"{member.display_name} joined {after.channel.name}")
             # await self.se
             if len(after.channel.members) > 1:
-                await after.channel.send(
-                    f"{member.display_name} initiated today's Coffee Break at {after.channel.name}")
+                await self.send_message_to_reminder_channels(
+                    f"{member.display_name} initiated today's session at {after.channel.name}")
+
             else:
-                await after.channel.send(
-                    f"{member.display_name} joined today's Coffee Break at {after.channel.name}")
+                await self.send_message_to_reminder_channels(
+                    f"{member.display_name} joined today's session at {after.channel.name}")
 
     async def on_ready(self):
         if not self.started:
@@ -86,6 +87,7 @@ class MyClient(discord.Client):
         # await message.channel.send(f'Haha - {message.author} tried to delete message {message.content} - what a noob')
 
     async def on_voice_state_update(self, member, before, after):
+        logger.info("Voice status update...")
         await self.update_coffee_break_status(member=member, before=before, after=after)
 
     async def call_for_coffee_break(self):
@@ -93,8 +95,12 @@ class MyClient(discord.Client):
         current_date = datetime.now()
         day_as_string = current_date.strftime("%Y-%m.%d")
         time_as_string = current_date.strftime("%H:%M")
+        await self.send_message_to_reminder_channels(f"It's {time_as_string} on {day_as_string} - it's coffee time :)")
+        await self.send_message_to_reminder_channels(get_random_tenor_gif(app_settings.TENOR_SEARCH_TOPIC))
+
+    async def send_message_to_reminder_channels(self, message):
+        logger.info(f"Bot sending message: {message}")
         for guild in self.guilds:
             for channel_category in guild.channels:
                 if channel_category.name in self.reminder_channels:
-                    await channel_category.send(f"It's {time_as_string} on {day_as_string} - it's coffee time :)")
-                    await channel_category.send(get_random_tenor_gif(app_settings.TENOR_SEARCH_TOPIC))
+                    await channel_category.send(message)

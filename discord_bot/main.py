@@ -10,9 +10,9 @@ logging.basicConfig(level=app_settings.LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 
-# intents = discord.Intents.default()
-# intents.message_content = True
-intents = discord.Intents(messages=True, guilds=True)
+intents = discord.Intents.default()
+intents.message_content = True
+# intents = discord.Intents(messages=True, guilds=True)
 client = MyClient(intents=intents, reminder_hour=app_settings.DISCORD_REMINDER_HOUR,
                   reminder_channels=app_settings.reminder_channels,
                   watching_channels=app_settings.watching_channels,
