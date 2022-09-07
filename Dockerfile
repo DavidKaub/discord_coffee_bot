@@ -1,9 +1,8 @@
 FROM python:3.10-slim-bullseye
 
-WORKDIR /discord_bot
-COPY discord_bot/requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
+COPY . /discord_coffee_bot
+WORKDIR /discord_coffee_bot
 
-CMD python ./discord_bot/main.py
-# CMD [ "python", "main.py"]
+RUN pip install --no-cache-dir -r discord_bot/requirements.txt
+
+ENTRYPOINT ["python3",  "./discord_bot/main.py"]

@@ -4,7 +4,7 @@ import random
 
 import requests as requests
 
-from discord_bot.discord_coffee_reminder import MySettings
+from . import MySettings
 
 app_settings = MySettings()
 
