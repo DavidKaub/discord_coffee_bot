@@ -9,5 +9,5 @@ Warning: *It's working, but it's work in progress*
 ## Run in Container
 ```shell
 docker build -t coffee_bot .
-dokcer run --name my_coffee_bot coffee_bot
+docker run --name my_coffee_bot coffee_bot
 ```
