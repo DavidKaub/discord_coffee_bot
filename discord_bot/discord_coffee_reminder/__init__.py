@@ -44,15 +44,14 @@ class MyClient(discord.Client):
 
             if current_weekday != last_day_weekday:
                 # if a new day has begun a new announcement is due
-                logger.info("A new day has begun...")
-                logger.info(current_day)
+                logger.info(f"A new day has begun {current_day}")
                 announce = True
 
             if not self.weekday_only or current_weekday < 5:
                 # only announce at weekdays..
                 if announce and current_day.hour == self.reminder_hour:
                     announce = False
-                    await self.call_for_coffee_break()
+                    await self.call_for_coffee_break(current_day)
 
         logger.info("reminder thread is going down...")
 
@@ -79,19 +78,19 @@ class MyClient(discord.Client):
 
     async def on_message_delete(self, message):
         pass
-        logger.info(f"{message.author} tried to delete message {message.content}")
+        # logger.info(f"{message.author} tried to delete message {message.content}")
         # await message.channel.send(f'Haha - {message.author} tried to delete message {message.content} - what a noob')
 
     async def on_voice_state_update(self, member, before, after):
         logger.info("Voice status update...")
         await self.update_coffee_break_status(member=member, before=before, after=after)
 
-    async def call_for_coffee_break(self):
+    async def call_for_coffee_break(self, current_date: datetime):
         logger.info("Call for Coffee Time!")
-        current_date = datetime.now()
-        day_as_string = current_date.strftime("%Y-%m.%d")
+        day_as_string = current_date.strftime("%Y-%m-%d")
         time_as_string = current_date.strftime("%H:%M")
-        await self.send_message_to_reminder_channels(f"It's {time_as_string} on {day_as_string} - it's coffee time :)")
+        await self.send_message_to_reminder_channels(f"It's the {day_as_string} at {time_as_string} o'clock  - it's "
+                                                     f"coffee time :)")
         await self.send_message_to_reminder_channels(get_random_tenor_gif(app_settings.TENOR_SEARCH_TOPIC))
 
     async def send_message_to_reminder_channels(self, message):
