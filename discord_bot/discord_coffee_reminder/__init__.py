@@ -60,13 +60,9 @@ class MyClient(discord.Client):
         if after.channel and after.channel.name in self.watching_channels:
             logger.info(f"{member.display_name} joined {after.channel.name}")
             # await self.se
-            if len(after.channel.members) > 1:
+            if len(after.channel.members) <= 1:
                 await self.send_message_to_reminder_channels(
-                    f"{member.display_name} initiated today's session at {after.channel.name}")
-
-            else:
-                await self.send_message_to_reminder_channels(
-                    f"{member.display_name} joined today's session at {after.channel.name}")
+                    f"{member.display_name} initiated session at {after.channel.name}")
 
     async def on_ready(self):
         if not self.started:
