@@ -17,6 +17,6 @@ client = MyClient(intents=intents, reminder_hour=app_settings.DISCORD_REMINDER_H
                   reminder_channels=app_settings.reminder_channels,
                   watching_channels=app_settings.watching_channels,
                   weekday_only=app_settings.WEEKDAY_ONLY)
-client.run(app_settings.DISCORD_BOT_TOKEN)
+client.run(app_settings.DISCORD_DEV_BOT_TOKEN)
 # stop reminder if bot is not running...
 client.running = False
